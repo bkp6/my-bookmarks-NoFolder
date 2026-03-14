@@ -3,36 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>我的網址收藏1.0.3</title>
+    <title>我的網址收藏</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h1>我的網址收藏</h1>
 
-<h2>資料夾管理</h2>
-<div class="form">
-    <input id="newFolder" type="text" placeholder="新增資料夾名稱">
-    <button id="addFolderBtn">新增資料夾</button>
+<div id="folderView">
+    <h2>資料夾</h2>
+    <div class="form">
+        <input id="newFolder" type="text" placeholder="新增資料夾名稱">
+        <button id="addFolderBtn">新增資料夾</button>
+    </div>
+    <ul id="folderList"></ul>
 </div>
 
-<h2>資料夾列表</h2>
-<select id="folderSelect"></select>
+<div id="linkView" style="display:none;">
+    <h2 id="currentFolderTitle"></h2>
 
-<div class="form">
-    <input id="renameFolder" type="text" placeholder="重新命名資料夾">
-    <button id="renameFolderBtn" disabled>重新命名</button>
-    <button id="deleteFolderBtn" disabled>刪除資料夾</button>
+    <div class="form">
+        <input id="renameFolder" type="text" placeholder="重新命名資料夾">
+        <button id="renameFolderBtn">重新命名</button>
+        <button id="deleteFolderBtn">刪除資料夾</button>
+        <button id="backBtn">返回資料夾列表</button>
+    </div>
+
+    <h3>新增網址</h3>
+    <div class="form">
+        <input id="name" type="text" placeholder="名稱（例如：YouTube）">
+        <input id="url" type="url" placeholder="網址（例如：https://www.youtube.com）">
+        <button id="addBtn">新增網址</button>
+    </div>
+
+    <ul id="list"></ul>
 </div>
-
-<h2>新增網址</h2>
-<div class="form">
-    <input id="name" type="text" placeholder="名稱（例如：YouTube）">
-    <input id="url" type="url" placeholder="網址（例如：https://www.youtube.com）">
-    <button id="addBtn">新增網址</button>
-</div>
-
-<ul id="list"></ul>
 
 <script src="script.js"></script>
 </body>
