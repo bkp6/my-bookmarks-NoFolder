@@ -61,7 +61,17 @@ function renderFolders() {
         folderSelect.appendChild(opt);
     });
 
+    updateFolderButtons();
     renderLinks();
+}
+
+
+// 更新按鈕啟用狀態
+function updateFolderButtons() {
+    const hasFolder = folderSelect.value !== "";
+
+    renameFolderBtn.disabled = !hasFolder;
+    deleteFolderBtn.disabled = !hasFolder;
 }
 
 
@@ -129,10 +139,6 @@ renameFolderBtn.addEventListener("click", () => {
     const oldName = folderSelect.value;
     const newName = renameFolderInput.value.trim();
 
-    if (!oldName) {
-        alert("請先選擇資料夾");
-        return;
-    }
     if (!newName) {
         alert("請輸入新名稱");
         return;
@@ -163,10 +169,6 @@ renameFolderBtn.addEventListener("click", () => {
 // 刪除資料夾
 deleteFolderBtn.addEventListener("click", () => {
     const folder = folderSelect.value;
-    if (!folder) {
-        alert("請先選擇資料夾");
-        return;
-    }
 
     if (!confirm(`確定要刪除資料夾「${folder}」嗎？（裡面的網址也會一起刪除）`)) {
         return;
@@ -182,40 +184,8 @@ deleteFolderBtn.addEventListener("click", () => {
 });
 
 
-// 新增網址
-addBtn.addEventListener("click", () => {
-    const folder = folderSelect.value;
-    if (!folder) {
-        alert("請先新增資料夾");
-        return;
-    }
-
-    const name = nameInput.value.trim();
-    let url = urlInput.value.trim();
-
-    if (!url) {
-        alert("請輸入網址");
-        return;
-    }
-
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        url = "https://" + url;
-    }
-
-    const links = loadLinks(folder);
-
-    if (links.some(item => item.name === name)) {
-        alert("此資料夾內已存在相同名稱");
-        return;
-    }
-
-    links.push({ name: name || url, url });
-    saveLinks(folder, links);
-
-    nameInput.value = "";
-    urlInput.value = "";
-    renderLinks();
-});
+// 當選擇資料夾時更新按鈕狀態
+folderSelect.addEventListener("change", updateFolderButtons);
 
 
 // 初始化
