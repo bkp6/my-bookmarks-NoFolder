@@ -8,7 +8,12 @@ const listEl = document.getElementById("list");
 
 const newFolderInput = document.getElementById("newFolder");
 const addFolderBtn = document.getElementById("addFolderBtn");
+
 const folderSelect = document.getElementById("folderSelect");
+
+const renameFolderInput = document.getElementById("renameFolder");
+const renameFolderBtn = document.getElementById("renameFolderBtn");
+const deleteFolderBtn = document.getElementById("deleteFolderBtn");
 
 
 // 讀取資料夾
@@ -119,6 +124,64 @@ addFolderBtn.addEventListener("click", () => {
 });
 
 
+// 重新命名資料夾
+renameFolderBtn.addEventListener("click", () => {
+    const oldName = folderSelect.value;
+    const newName = renameFolderInput.value.trim();
+
+    if (!oldName) {
+        alert("請先選擇資料夾");
+        return;
+    }
+    if (!newName) {
+        alert("請輸入新名稱");
+        return;
+    }
+
+    const folders = loadFolders();
+
+    if (folders.includes(newName)) {
+        alert("已有相同名稱的資料夾");
+        return;
+    }
+
+    // 修改資料夾名稱
+    const index = folders.indexOf(oldName);
+    folders[index] = newName;
+    saveFolders(folders);
+
+    // 搬移網址資料
+    const oldLinks = loadLinks(oldName);
+    localStorage.removeItem("my_links_" + oldName);
+    saveLinks(newName, oldLinks);
+
+    renameFolderInput.value = "";
+    renderFolders();
+});
+
+
+// 刪除資料夾
+deleteFolderBtn.addEventListener("click", () => {
+    const folder = folderSelect.value;
+    if (!folder) {
+        alert("請先選擇資料夾");
+        return;
+    }
+
+    if (!confirm(`確定要刪除資料夾「${folder}」嗎？（裡面的網址也會一起刪除）`)) {
+        return;
+    }
+
+    const folders = loadFolders();
+    const updated = folders.filter(f => f !== folder);
+    saveFolders(updated);
+
+    localStorage.removeItem("my_links_" + folder);
+
+    renderFolders();
+});
+
+
 // 新增網址
 addBtn.addEventListener("click", () => {
     const folder = folderSelect.value;
@@ -141,7 +204,6 @@ addBtn.addEventListener("click", () => {
 
     const links = loadLinks(folder);
 
-    // 禁止同資料夾內重複名稱
     if (links.some(item => item.name === name)) {
         alert("此資料夾內已存在相同名稱");
         return;
