@@ -12,15 +12,12 @@ const currentFolderTitle = document.getElementById("currentFolderTitle");
 const newFolderInput = document.getElementById("newFolder");
 const addFolderBtn = document.getElementById("addFolderBtn");
 
-const renameFolderInput = document.getElementById("renameFolder");
-const renameFolderBtn = document.getElementById("renameFolderBtn");
-const deleteFolderBtn = document.getElementById("deleteFolderBtn");
-const backBtn = document.getElementById("backBtn");
-
 const nameInput = document.getElementById("name");
 const urlInput = document.getElementById("url");
 const addBtn = document.getElementById("addBtn");
+
 const listEl = document.getElementById("list");
+const backBtn = document.getElementById("backBtn");
 
 let currentFolder = null;
 
@@ -59,12 +56,25 @@ function renderFolders() {
         const li = document.createElement("li");
         li.className = "folder-item";
 
-        const span = document.createElement("span");
-        span.className = "folder-name";
-        span.textContent = folder;
-        span.onclick = () => openFolder(folder);
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "folder-name";
+        nameSpan.textContent = folder;
+        nameSpan.onclick = () => openFolder(folder);
 
-        li.appendChild(span);
+        const renameBtn = document.createElement("button");
+        renameBtn.className = "action-btn";
+        renameBtn.textContent = "改名";
+        renameBtn.onclick = () => renameFolder(folder);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "action-btn";
+        deleteBtn.textContent = "刪除";
+        deleteBtn.onclick = () => deleteFolder(folder);
+
+        li.appendChild(nameSpan);
+        li.appendChild(renameBtn);
+        li.appendChild(deleteBtn);
+
         folderList.appendChild(li);
     });
 
@@ -87,6 +97,7 @@ function renderUncategorized() {
         a.textContent = item.name || item.url;
 
         const delBtn = document.createElement("button");
+        delBtn.className = "action-btn";
         delBtn.textContent = "刪除";
         delBtn.onclick = () => {
             const updated = loadLinks(UNCATEGORIZED);
@@ -137,6 +148,7 @@ function renderLinks() {
         a.textContent = item.name || item.url;
 
         const delBtn = document.createElement("button");
+        delBtn.className = "action-btn";
         delBtn.textContent = "刪除";
         delBtn.onclick = () => {
             const updated = loadLinks(currentFolder);
@@ -168,45 +180,40 @@ addFolderBtn.onclick = () => {
 };
 
 
-// 重新命名資料夾
-renameFolderBtn.onclick = () => {
-    const newName = renameFolderInput.value.trim();
-    if (!newName) return alert("請輸入新名稱");
+// 改名資料夾
+function renameFolder(folder) {
+    const newName = prompt("輸入新資料夾名稱：", folder);
+    if (!newName) return;
 
     const folders = loadFolders();
     if (folders.includes(newName)) return alert("已有相同名稱");
 
-    const index = folders.indexOf(currentFolder);
+    const index = folders.indexOf(folder);
     folders[index] = newName;
     saveFolders(folders);
 
-    const oldLinks = loadLinks(currentFolder);
-    localStorage.removeItem("my_links_" + currentFolder);
+    const oldLinks = loadLinks(folder);
+    localStorage.removeItem("my_links_" + folder);
     saveLinks(newName, oldLinks);
 
-    currentFolder = newName;
-    renameFolderInput.value = "";
-
-    currentFolderTitle.textContent = "目前位置：" + newName;
     renderFolders();
-};
+}
 
 
 // 刪除資料夾
-deleteFolderBtn.onclick = () => {
-    if (!confirm(`確定要刪除資料夾「${currentFolder}」嗎？`)) return;
+function deleteFolder(folder) {
+    if (!confirm(`確定要刪除資料夾「${folder}」嗎？`)) return;
 
-    const folders = loadFolders().filter(f => f !== currentFolder);
+    const folders = loadFolders().filter(f => f !== folder);
     saveFolders(folders);
 
-    localStorage.removeItem("my_links_" + currentFolder);
+    localStorage.removeItem("my_links_" + folder);
 
-    backBtn.onclick();
     renderFolders();
-};
+}
 
 
-// 新增網址（可選資料夾或未分類）
+// 新增網址（自動存到未分類）
 addBtn.onclick = () => {
     let name = nameInput.value.trim();
     let url = urlInput.value.trim();
@@ -214,19 +221,19 @@ addBtn.onclick = () => {
     if (!url) return alert("請輸入網址");
     if (!url.startsWith("http")) url = "https://" + url;
 
-    const links = loadLinks(currentFolder);
+    const links = loadLinks(UNCATEGORIZED);
 
     if (links.some(item => item.name === name)) {
         return alert("名稱重複");
     }
 
     links.push({ name: name || url, url });
-    saveLinks(currentFolder, links);
+    saveLinks(UNCATEGORIZED, links);
 
     nameInput.value = "";
     urlInput.value = "";
 
-    renderLinks();
+    renderUncategorized();
 };
 
 
