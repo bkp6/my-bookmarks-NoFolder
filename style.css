@@ -5,7 +5,7 @@ body {
     padding: 0 10px;
 }
 
-h1, h2 {
+h1, h2, h3 {
     text-align: center;
 }
 
@@ -16,7 +16,7 @@ h1, h2 {
     margin-bottom: 16px;
 }
 
-input, select {
+input {
     padding: 10px;
     font-size: 16px;
 }
@@ -27,23 +27,24 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-#list {
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.item {
+.item, .folder-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 10px;
     border-bottom: 1px solid #ddd;
+}
+
+.folder-name {
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .item a {
