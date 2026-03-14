@@ -52,7 +52,6 @@ addBtn.addEventListener("click", () => {
   let name = nameInput.value.trim();
   let url = urlInput.value.trim();
 
-  // 🔥 名稱必填（否則永遠不會重複）
   if (!name) {
     alert("請輸入名稱！");
     return;
@@ -69,7 +68,6 @@ addBtn.addEventListener("click", () => {
 
   const links = loadLinks();
 
-  // 🔥 名稱重複檢查（現在一定會生效）
   const exists = links.some(item => item.name === name);
   if (exists) {
     alert("這個名稱已經存在，請換一個名稱！");
